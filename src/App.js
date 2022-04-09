@@ -3,7 +3,7 @@ import React from 'react';
 
 // global variables to change where necessary
 const DROPDOWN_API_ENDPOINT = 'https://ag72i68dq5.execute-api.us-east-1.amazonaws.com/prod/'; // TODO The demo files GET/POST REST API
-const ML_API_ENDPOINT = 'https://zhc7viossk.execute-api.us-east-1.amazonaws.com/prod/'; // TODO The handwritten digit inference POST REST API 
+const ML_API_ENDPOINT = "https://pq22krmubb.execute-api.us-east-1.amazonaws.com/prod"; // TODO The handwritten digit inference POST REST API 
 
 
 // atob is deprecated but this function converts base64string to text string
