@@ -2,7 +2,7 @@ import './App.css';
 import React from 'react';
 
 // global variables to change where necessary
-const DROPDOWN_API_ENDPOINT = 'https://ag72i68dq5.execute-api.us-east-1.amazonaws.com/prod/'; // TODO The demo files GET/POST REST API
+const DROPDOWN_API_ENDPOINT = 'https://u4duylmb1i.execute-api.us-east-1.amazonaws.com/prod/'; // TODO The demo files GET/POST REST API
 const ML_API_ENDPOINT = 'https://pq22krmubb.execute-api.us-east-1.amazonaws.com/prod/'; // TODO The handwritten digit inference POST REST API 
 
 
