@@ -162,51 +162,29 @@ function App() {
     }
   }
 
-  render(); {
-    var x=75,y=300; //定义变量x,y
-    var mysvg = document.getElementById("mySVG");//实例化
-    var svgrec = new Array();//定义新的数组
-    for (var i=0; i < 6; i++){
-      svgrec[i] = document.createElement("rect");
-      mysvg.appendChild(svgrec[i]);
-      var h = Math.random()*300;
-    svgrec[i].outerHTML="<rect x="+(i*x)+" y="+(y-h)+" width=60 height="+(h)+" Style='fill:red' />";
-  }
-  
-
 
   return (
-    <Fragment>
-      <div className="App">
-
-        <div className="Input">
-          <svg id="mySVG" width="800" height="600" version="1.1"
-              xmlns="http://www.w3.org/2000/svg"></svg>
-          <script>
-            {svgrec}
-          </script>
-
-          <h1>Input</h1>
-          <label htmlFor="demo-dropdown">Demo: </label>
-          <select name="Select Image" id="demo-dropdown" value={selectedDropdownFile} onChange={handleDropdown}>
-              <option value="">-- Select Demo File --</option>
-              {demoDropdownFiles.map((file) => <option key={file} value={file}>{file}</option>)}
-          </select>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="file-upload">{fileButtonText}</label>
-            <input type="file" id="file-upload" onChange={handleChange} />
-            <button type="submit" disabled={buttonDisable}>{submitButtonText}</button>
-          </form>
-          <img src={inputImage} alt="" />
-        </div>
-        <div className="Output">
-          <h1>Results</h1>
-          <p>{outputFileData}</p>
-        </div>
+    <div className="App">
+      <div className="Input">
+        <h1>Input</h1>
+        <label htmlFor="demo-dropdown">Demo: </label>
+        <select name="Select Image" id="demo-dropdown" value={selectedDropdownFile} onChange={handleDropdown}>
+            <option value="">-- Select Demo File --</option>
+            {demoDropdownFiles.map((file) => <option key={file} value={file}>{file}</option>)}
+        </select>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="file-upload">{fileButtonText}</label>
+          <input type="file" id="file-upload" onChange={handleChange} />
+          <button type="submit" disabled={buttonDisable}>{submitButtonText}</button>
+        </form>
+        <img src={inputImage} alt="" />
       </div>
-    </Fragment>
+      <div className="Output">
+        <h1>Results</h1>
+        <p>{outputFileData}</p>
+      </div>
+    </div>
   );
-  }
 }
 
 export default App;
