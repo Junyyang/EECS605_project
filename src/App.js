@@ -10,13 +10,13 @@ const ML_API_ENDPOINT = 'https://pq22krmubb.execute-api.us-east-1.amazonaws.com/
 const decodeFileBase64 = (base64String) => {
   // From Bytestream to Percent-encoding to Original string
 
-  return "data:image/png;base64," + base64String
+  // return "data:image/png;base64," + base64String
 
-  // return decodeURIComponent(
-  //   atob(base64String).split("").map(function (c) {
-  //     return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-  //   }).join("")
-  // );
+  return decodeURIComponent(
+    atob(base64String).split("").map(function (c) {
+      return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join("")
+  );
 };
 
 
