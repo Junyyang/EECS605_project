@@ -166,6 +166,7 @@ function App() {
   return (
     <div className="App">
       <div className="Input">
+        <h1>Junyyang's Project | Traditional Chinese Calligraphy Style recognition</h1>
         <h1>Input</h1>
         <label htmlFor="demo-dropdown">Demo: </label>
         <select name="Select Image" id="demo-dropdown" value={selectedDropdownFile} onChange={handleDropdown}>
@@ -183,6 +184,8 @@ function App() {
         <h1>Results</h1>
         <p>{outputFileData}</p>
       </div>
+      <a href="https://drive.google.com/file/d/1aowEQgeSo2WkMqScQzFM8IaYZUx4cul2/view?usp=sharing">REPORT LINK</a>
+      
     </div>
   );
 }
