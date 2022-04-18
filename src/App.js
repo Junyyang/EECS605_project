@@ -28,6 +28,7 @@ import Seal5 from "./test_image/Zhuan/3.jpg"
 // global variables to change where necessary
 const DROPDOWN_API_ENDPOINT = 'https://u4duylmb1i.execute-api.us-east-1.amazonaws.com/prod/'; // TODO The demo files GET/POST REST API
 const ML_API_ENDPOINT = 'https://pq22krmubb.execute-api.us-east-1.amazonaws.com/prod/'; // TODO The handwritten digit inference POST REST API 
+const PLOT_API_ENDPOINT = 'https://pt9okgfp10.execute-api.us-east-1.amazonaws.com/prod'; 
 
 
 // atob is deprecated but this function converts base64string to text string
@@ -43,10 +44,18 @@ const decodeFileBase64 = (base64String) => {
   );
 };
 
+// atob is deprecated but this function converts base64string to text string
+const decodeImageBase64 = (base64String) => {
+  // From Bytestream to Percent-encoding to Original string
+
+  return "data:image/png;base64," + base64String
+};
+
 
 function App() {
   const [inputFileData, setInputFileData] = React.useState(''); // represented as bytes data (string)
-  const [outputFileData, setOutputFileData] = React.useState(''); // represented as readable data (text string)
+  const [textFileData, settextFileData] = React.useState(''); // represented as readable data (image)
+  const [histFileData, sethistFileData] = React.useState(''); // represented as readable data (text string)
   const [inputImage, setInputImage] = React.useState(''); // represented as bytes data (string)
   const [buttonDisable, setButtonDisable] = React.useState(true);
   const [submitButtonText, setSubmitButtonText] = React.useState('Submit');
@@ -108,14 +117,16 @@ function App() {
     setButtonDisable(false);
 
     // clear response results
-    setOutputFileData('');
+    settextFileData('')
+    sethistFileData('');
 
     // reset demo dropdown selection
     setSelectedDropdownFile('');
   }
 
 
-  // handle file submission
+  // handle calligraphy image  file submission
+  // get the prediction result array
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -127,26 +138,87 @@ function App() {
     fetch(ML_API_ENDPOINT, {
       method: 'POST',
       headers: { "Content-Type": "application/json", "Accept": "text/plain" },
-      body: JSON.stringify({ "image": inputFileData })
+      body: JSON.stringify({ "image": inputFileData })                             // send calligraphy image to ML lambda
     }).then(response => response.json())
     .then(data => {
       // POST request error
       if (data.statusCode === 400) {
         const outputErrorMessage = JSON.parse(data.errorMessage)['outputResultsData'];
-        setOutputFileData(outputErrorMessage);
+        settextFileData(outputErrorMessage);
       }
 
       // POST request success
       else {
         const outputBytesData = JSON.parse(data.body)['outputResultsData'];
-        setOutputFileData(decodeFileBase64(outputBytesData));
+        settextFileData(decodeFileBase64(outputBytesData));   // Setup txt output file
+      }
+
+      // // re-enable submit button
+      // setButtonDisable(false);
+      // setSubmitButtonText('Submit');
+    })
+
+    // make POST request
+    fetch(PLOT_API_ENDPOINT, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json", "Accept": "text/plain" },
+      body: JSON.stringify({ "text": textFileData })                             // send text result to histogram lambda
+    }).then(response => response.json())
+    .then(data => {
+      // POST request error
+      if (data.statusCode === 400) {
+        const outputErrorMessage = JSON.parse(data.errorMessage)['outputResultsData'];
+        sethistFileData(outputErrorMessage);
+      }
+
+      // POST request success
+      else {
+        const outputBytesData = JSON.parse(data.body)['outputResultsData'];
+        sethistFileData(decodeImageBase64(outputBytesData));   // Setup txt output file
       }
 
       // re-enable submit button
       setButtonDisable(false);
       setSubmitButtonText('Submit');
     })
+
+
   }
+
+
+  // // handle txt  file submission
+  // // get the histogram image
+  // const handletxtSubmit = (event) => {
+  //   event.preventDefault();
+
+  //   // // temporarily disable submit button
+  //   // setButtonDisable(true);
+  //   // setSubmitButtonText('Loading Result...');
+
+  //   // make POST request
+  //   fetch(PLOT_API_ENDPOINT, {
+  //     method: 'POST',
+  //     headers: { "Content-Type": "application/json", "Accept": "text/plain" },
+  //     body: JSON.stringify({ "text": textFileData })                             // send text result to histogram lambda
+  //   }).then(response => response.json())
+  //   .then(data => {
+  //     // POST request error
+  //     if (data.statusCode === 400) {
+  //       const outputErrorMessage = JSON.parse(data.errorMessage)['outputResultsData'];
+  //       sethistFileData(outputErrorMessage);
+  //     }
+
+  //     // POST request success
+  //     else {
+  //       const outputBytesData = JSON.parse(data.body)['outputResultsData'];
+  //       sethistFileData(decodeImageBase64(outputBytesData));   // Setup txt output file
+  //     }
+
+  //     // re-enable submit button
+  //     setButtonDisable(false);
+  //     setSubmitButtonText('Submit');
+  //   })
+  // }
 
 
   // handle demo dropdown file selection
@@ -204,13 +276,16 @@ function App() {
         </form>
         <img src={inputImage} alt="" />
       </div>
+
       <div className="Output">
         <h1>Results</h1>
         <p>{outputFileData}</p>
+        <img src={histFileData} alt="" width="80%" height="auto" /> 
       </div>
+      
       <a href="https://drive.google.com/file/d/1aowEQgeSo2WkMqScQzFM8IaYZUx4cul2/view?usp=sharing">REPORT LINK</a>
       
-      <h2>Cursive Script Samples:</h2>
+      {/* <h2>Cursive Script Samples:</h2>
           <p>script 1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               script 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               script 3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -270,7 +345,7 @@ function App() {
               <td><img src={Seal3} alt="Seal Script" width="250" height="300"/></td>
               <td><img src={Seal4} alt="Seal Script" width="250" height="300"/></td>
               <td><img src={Seal5} alt="Seal Script" width="250" height="300"/></td>
-          </tr></table>
+          </tr></table> */}
     </div>
   );
 }
